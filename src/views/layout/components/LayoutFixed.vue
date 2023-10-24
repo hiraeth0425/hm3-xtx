@@ -1,42 +1,26 @@
 <script setup>
+import { useUserStore } from '@/stores/modules/user.js'
 import { useScroll } from '@vueuse/core'
 const { y } = useScroll(window)
+
+// 獲取商品分類列表
+const userStore = useUserStore()
 </script>
 
 <template>
   <div class="app-header-sticky" :class="{ show: y >= 100 ? true : false }">
     <div class="container">
+      <img src="@/assets/logo.png" alt="" />
       <RouterLink class="logo" to="/" />
-      <ul class="app-header-nav">
+      <ul
+        class="app-header-nav"
+        v-for="item in userStore.categoryList"
+        :key="item.key"
+      >
         <li class="home">
-          <RouterLink to="/">首页</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">居家</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">美食</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">服饰</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">母婴</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">个护</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">严选</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">数码</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">运动</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/">杂项</RouterLink>
+          <RouterLink active-class="active" :to="`/category/${item.id}`">{{
+            item.name
+          }}</RouterLink>
         </li>
       </ul>
 
@@ -50,6 +34,7 @@ const { y } = useScroll(window)
 
 <style scoped lang="scss">
 .app-header-sticky {
+  margin: 0 auto;
   width: 100%;
   height: 80px;
   position: fixed;
@@ -58,12 +43,12 @@ const { y } = useScroll(window)
   z-index: 999;
   background-color: #fff;
   border-bottom: 1px solid #e4e4e4;
-  // 此处为关键样式!!!
-  // 状态一：往上平移自身高度 + 完全透明
+  /* 此处为关键样式!!! */
+  /* 状态一：往上平移自身高度 + 完全透明 */
   transform: translateY(-100%);
   opacity: 0;
 
-  // 状态二：移除平移 + 完全不透明
+  /* 状态二：移除平移 + 完全不透明 */
   &.show {
     transition: all 0.3s linear;
     transform: none;
@@ -75,11 +60,12 @@ const { y } = useScroll(window)
     align-items: center;
   }
 
-  .logo {
+  .logo,
+  img {
     width: 200px;
     height: 80px;
-    background: url('@/assets/logo.png') no-repeat right 2px;
-    background-size: 160px auto;
+    background: no-repeat right;
+    background-size: 160px 100%;
   }
 
   .right {

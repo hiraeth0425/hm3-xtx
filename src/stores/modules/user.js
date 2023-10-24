@@ -1,23 +1,27 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
 export const useUserStore = defineStore(
   'xtx-user',
   () => {
-    // 聲明數據
+    // token
     const token = ref('')
-    // 聲明操作數據的方法
+    // 儲存token
     const setToken = (newToken) => {
       token.value = newToken
     }
+    // 移除token
     const removeToken = () => {
       token.value = ''
     }
 
+    // 儲存商品分類列表
+    const categoryList = ref([])
+
     return {
       token,
       setToken,
-      removeToken
+      removeToken,
+      categoryList
     }
   },
   {

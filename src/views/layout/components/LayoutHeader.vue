@@ -1,15 +1,15 @@
 <script setup>
-import { ref } from 'vue'
 import { getCategoryService } from '@/api/layout.js'
+import { useUserStore } from '@/stores/modules/user.js'
 
 // 獲取商品分類列表
-const categoryList = ref([])
-const getCategoryList = async () => {
+const userStore = useUserStore()
+
+const CategoryList = async () => {
   const res = await getCategoryService()
-  // console.log(res)
-  categoryList.value = res.data.result
+  userStore.categoryList = res.data.result
 }
-getCategoryList()
+CategoryList()
 </script>
 
 <template>
@@ -19,8 +19,10 @@ getCategoryList()
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
       <ul class="app-header-nav">
-        <li class="home" v-for="item in categoryList" :key="item.id">
-          <RouterLink to="/">{{ item.name }}</RouterLink>
+        <li class="home" v-for="item in userStore.categoryList" :key="item.id">
+          <RouterLink active-class="active" :to="`/category/${item.id}`">{{
+            item.name
+          }}</RouterLink>
         </li>
       </ul>
       <div class="search">
