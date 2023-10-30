@@ -1,35 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-import { getSecCategoryService } from '@/api/category.js'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { getBannerService } from '@/api/layout.js'
 import GoodsItem from '@/views/home/components/GoodsItem.vue'
+import { useCategory } from './composables/useCategory'
+import { useBanner } from './composables/useBanner'
 
-const route = useRoute()
-const SecCategoryList = ref({})
-const getCategoryList = async (id = route.params.id) => {
-  const res = await getSecCategoryService(id)
-  SecCategoryList.value = res.data.result
-  // console.log(SecCategoryList.value)
-}
-getCategoryList()
-
-// 目標: 路由參數變化時, 可以把分類數據接口重新發送
-onBeforeRouteUpdate((to) => {
-  // console.log('路由變化了')
-  // 存在問題: 使用最新的路由參數請求最新的分類數據
-  // console.log(to.params.id)
-  getCategoryList(to.params.id)
-})
-
-// 獲取輪播圖數據
-const carousel = ref([])
-const getCarousel = async () => {
-  const distributionSite = '2' // 請求參數
-  const res = await getBannerService(distributionSite)
-  carousel.value = res.data.result
-}
-getCarousel()
+const { SecCategoryList } = useCategory()
+const { carousel } = useBanner()
 </script>
 
 <template>
@@ -51,7 +26,7 @@ getCarousel()
     <h3>全部分类</h3>
     <ul>
       <li v-for="i in SecCategoryList.children" :key="i.id">
-        <RouterLink to="/">
+        <RouterLink :to="`/category/sub/${i.id}`">
           <img :src="i.picture" />
           <p>{{ i.name }}</p>
         </RouterLink>
@@ -106,12 +81,15 @@ getCarousel()
     li {
       width: 168px;
       height: 160px;
-      img {
-        width: 100px;
-        height: 100px;
-      }
-      p {
-        line-height: 40px;
+    }
+    img {
+      width: 100px;
+      height: 100px;
+    }
+    p {
+      line-height: 40px;
+      &:hover {
+        color: $xtxColor;
       }
     }
   }
